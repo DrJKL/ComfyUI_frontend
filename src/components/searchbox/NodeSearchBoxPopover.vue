@@ -266,7 +266,8 @@ const cancelNextReset = (e: CustomEvent<CanvasPointerEvent>) => {
   })
 }
 
-const handleDroppedOnCanvas = (e: CustomEvent<CanvasPointerEvent>) => {
+// Temporary change to fix a hot-reload bug
+function handleDroppedOnCanvas(e: CustomEvent<CanvasPointerEvent>) {
   disconnectOnReset = true
   const action = e.detail.shiftKey
     ? linkReleaseActionShift.value

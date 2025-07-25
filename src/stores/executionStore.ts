@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 
 import type ChatHistoryWidget from '@/components/graph/widgets/ChatHistoryWidget.vue'
 import { useNodeChatHistory } from '@/composables/node/useNodeChatHistory'
+import { useNodeImageCompare } from '@/composables/node/useNodeImageCompare'
 import { useNodeProgressText } from '@/composables/node/useNodeProgressText'
 import type {
   DisplayComponentWsMessage,
@@ -268,6 +269,7 @@ export const useExecutionStore = defineStore('execution', () => {
   function handleExecuted(e: CustomEvent<ExecutedWsMessage>) {
     if (!activePrompt.value) return
     activePrompt.value.nodes[e.detail.node] = true
+    handleImageCompare(e)
   }
 
   function handleExecuting(e: CustomEvent<NodeId | null>): void {
@@ -350,6 +352,45 @@ export const useExecutionStore = defineStore('execution', () => {
     if (!node) return
 
     useNodeProgressText().showTextPreview(node, text)
+  }
+
+  function checkValidImageComparisonPaths(
+    image_compare_images: unknown
+  ): image_compare_images is [string, string] {
+    if (!Array.isArray(image_compare_images)) {
+      return false
+    }
+    const asArray: unknown[] = image_compare_images
+    if (asArray.length !== 2) {
+      return false
+    }
+    const [valueOne, valueTwo] = asArray
+    if (typeof valueOne !== 'string' || typeof valueTwo !== 'string') {
+      return false
+    }
+    return true
+  }
+
+  function handleImageCompare(e: CustomEvent<ExecutedWsMessage>) {
+    const { node: nodeId, output } = e.detail
+    if (!output || !nodeId) return
+
+    if (!output.image_compare_images) {
+      return
+    }
+    const { image_compare_images } = output
+    if (!checkValidImageComparisonPaths(image_compare_images)) {
+      return
+    }
+
+    // Handle execution node IDs for subgraphs
+    const currentId = getNodeIdIfExecuting(nodeId)
+    const node = canvasStore.getCanvas().graph?.getNodeById(currentId)
+    if (!node) return
+
+    const nodeImageCompare = useNodeImageCompare(image_compare_images)
+    nodeImageCompare.removeImageCompare(node)
+    nodeImageCompare.showImageCompare(node, image_compare_images)
   }
 
   function handleDisplayComponent(e: CustomEvent<DisplayComponentWsMessage>) {
