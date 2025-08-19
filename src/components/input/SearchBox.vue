@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
-import { defineModel } from 'vue'
 
 const { placeHolder } = defineProps<{
   placeHolder?: string
