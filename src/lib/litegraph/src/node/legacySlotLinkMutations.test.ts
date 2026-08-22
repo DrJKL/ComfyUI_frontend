@@ -250,7 +250,7 @@ describe('comfyui-promptchain indexed slot replacement', () => {
     consoleError.mockRestore()
   })
 
-  it.fails('reads the live link id back through a spread copy', () => {
+  it('reads the live link id back through a spread copy', () => {
     const { target } = autogrowChain(2, [0])
     const linkId = target.getInputLink(0)!.id
 
@@ -260,7 +260,7 @@ describe('comfyui-promptchain indexed slot replacement', () => {
     expect(target.inputs[0].link).toBe(linkId)
   })
 
-  it.fails('keeps connected inputs when the pack re-reads slot.link', () => {
+  it('keeps connected inputs when the pack re-reads slot.link', () => {
     const { graph, target } = autogrowChain(4, [0, 1, 2])
 
     replaceSlotsWithLabelledCopies(target)
