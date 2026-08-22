@@ -83,7 +83,7 @@ export function normalizeConfiguredTopology<T extends ConfiguredGraph>(
       toNodeId(survivor.origin_id) === toNodeId(fields.origin_id) &&
       survivor.origin_slot === fields.origin_slot
     if (!isExactDuplicate) {
-      console.warn('Dropping competing link to an occupied input', {
+      console.warn(`Dropping competing link to occupied input ${key}`, {
         droppedLinkId: fields.id,
         survivorLinkId: survivor.id,
         targetNodeId: fields.target_id,

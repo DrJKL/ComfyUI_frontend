@@ -324,7 +324,7 @@ describe('normalizeConfiguredTopology', () => {
     expect(normalized.links?.map((link) => link.id)).toEqual([2, 3])
     expect(normalized.nodes?.[1].inputs?.[0].link).toBe(2)
     expect(console.warn).toHaveBeenCalledWith(
-      'Dropping competing link to an occupied input',
+      'Dropping competing link to occupied input 2:0',
       expect.objectContaining({ droppedLinkId: 2, survivorLinkId: 1 })
     )
   })
